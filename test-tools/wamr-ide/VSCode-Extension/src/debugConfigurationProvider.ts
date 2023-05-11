@@ -38,7 +38,7 @@ export class WasmDebugConfigurationProvider
 
     constructor(extensionPath: string) {
         this.wasmDebugConfig.initCommands = [
-            /* Add rust formatters -> https://lldb.llvm.org/use/variable.html */
+            /* Add formatters for common rust data strucutres -> https://lldb.llvm.org/use/variable.html */
             `command script import ${extensionPath}/formatters/rust.py`
         ];
 
