@@ -54,132 +54,132 @@ suite('Unit Tests', function () {
     });
 });
 
-// suite('Inegration Tests', function () {
-//     let debuggerProcess: cp.ChildProcessWithoutNullStreams;
-//     const port = 1239;
-//     const downloadTimeout = 60 * 1000;
+suite('Inegration Tests', function () {
+    let debuggerProcess: cp.ChildProcessWithoutNullStreams;
+    const port = 1239;
+    const downloadTimeout = 60 * 1000;
 
-//     before(async function () {
+    before(async function () {
 
-//         // Download LLDB if necessary. Should be available in the CI. Only for local execution.
-//         if (!isLLDBInstalled(EXTENSION_PATH)) {
-//             fs.readdirSync(EXTENSION_PATH + "/resource/debug/linux").forEach(file => {
-//                 console.log(file);
-//             });
-//             this.timeout(downloadTimeout);
-//             console.log("Downloading LLDB...");
-//             await downloadLldb(EXTENSION_PATH);
-//             assert.isTrue(isLLDBInstalled(EXTENSION_PATH), "LLDB was not installed correctly");
-//         }
+        // Download LLDB if necessary. Should be available in the CI. Only for local execution.
+        if (!isLLDBInstalled(EXTENSION_PATH)) {
+            fs.readdirSync(EXTENSION_PATH + "/resource/debug/linux").forEach(file => {
+                console.log(file);
+            });
+            this.timeout(downloadTimeout);
+            console.log("Downloading LLDB...");
+            await downloadLldb(EXTENSION_PATH);
+            assert.isTrue(isLLDBInstalled(EXTENSION_PATH), "LLDB was not installed correctly");
+        }
 
-//         const platform = os.platform();
-//         assert.isTrue(platform === "darwin" || platform === "linux", `Tests do not support your platform: ${platform}`);
-//         const iWasmPath = path.resolve(`${EXTENSION_PATH}/../../../product-mini/platforms/${platform}/build/iwasm`);
-//         const testWasmFilePath = `${EXTENSION_PATH}/resource/test/test.wasm`;
+        const platform = os.platform();
+        assert.isTrue(platform === "darwin" || platform === "linux", `Tests do not support your platform: ${platform}`);
+        const iWasmPath = path.resolve(`${EXTENSION_PATH}/../../../product-mini/platforms/${platform}/build/iwasm`);
+        const testWasmFilePath = `${EXTENSION_PATH}/resource/test/test.wasm`;
 
-//         debuggerProcess = cp.spawn(
-//             iWasmPath,
-//             [`-g=127.0.0.1:${port}`, testWasmFilePath],
-//             {}
-//         );
-//     });
+        debuggerProcess = cp.spawn(
+            iWasmPath,
+            [`-g=127.0.0.1:${port}`, testWasmFilePath],
+            {}
+        );
+    });
 
-//     after(async function () {
-//         await vscode.debug.stopDebugging();
-//         debuggerProcess.kill();
-//     });
+    after(async function () {
+        await vscode.debug.stopDebugging();
+        debuggerProcess.kill();
+    });
 
 
-//     test('Rust formatters', async function () {
-//         console.log("test1");
-//         clearAllBp();
-//         console.log("test2");
-//         setBpAtMarker(`${EXTENSION_PATH}/resource/test/test.rs`, "BP_MARKER_1");
-//         console.log("test3");
+    test('Rust formatters', async function () {
+        console.log("test1");
+        clearAllBp();
+        console.log("test2");
+        setBpAtMarker(`${EXTENSION_PATH}/resource/test/test.rs`, "BP_MARKER_1");
+        console.log("test3");
 
-//         const getVariables = new Promise<DebugProtocol.Variable[]>((resolve, reject) => {
-//             vscode.debug.registerDebugAdapterTrackerFactory("wamr-debug", {
-//                 createDebugAdapterTracker: function () {
-//                     return {
-//                         // The debug adapter has sent a Debug Adapter Protocol message to the editor.
-//                         onDidSendMessage: (message: DebugProtocol.ProtocolMessage) => {
-//                             if (message.type === "response") {
-//                                 const m = message as DebugProtocol.Response;
-//                                 if (m.command === "variables") {
-//                                     console.log("test4");
-//                                     const res = m as DebugProtocol.VariablesResponse;
-//                                     resolve(res.body.variables);
-//                                 }
-//                             }
-//                         },
-//                         onError: (error: Error) => {
-//                             reject("An error occurred before vscode reached the breakpoint: " + error);
-//                         },
-//                         onExit: (code: number | undefined) => {
-//                             reject(`Debugger exited before vscode reached the breakpoint with code: ${code}`);
-//                         },
-//                     };
-//                 }
-//             });
-//         });
+        const getVariables = new Promise<DebugProtocol.Variable[]>((resolve, reject) => {
+            vscode.debug.registerDebugAdapterTrackerFactory("wamr-debug", {
+                createDebugAdapterTracker: function () {
+                    return {
+                        // The debug adapter has sent a Debug Adapter Protocol message to the editor.
+                        onDidSendMessage: (message: DebugProtocol.ProtocolMessage) => {
+                            if (message.type === "response") {
+                                const m = message as DebugProtocol.Response;
+                                if (m.command === "variables") {
+                                    console.log("test4");
+                                    const res = m as DebugProtocol.VariablesResponse;
+                                    resolve(res.body.variables);
+                                }
+                            }
+                        },
+                        onError: (error: Error) => {
+                            reject("An error occurred before vscode reached the breakpoint: " + error);
+                        },
+                        onExit: (code: number | undefined) => {
+                            reject(`Debugger exited before vscode reached the breakpoint with code: ${code}`);
+                        },
+                    };
+                }
+            });
+        });
 
-//         const config: WasmDebugConfig = {
-//             type: "wamr-debug",
-//             request: "attach",
-//             name: "Attach Debugger",
-//             stopOnEntry: false,
-//             initCommands: [
-//                 `command script import ${EXTENSION_PATH}/formatters/rust.py`
-//             ],
-//             attachCommands: [
-//                 `process connect -p wasm connect://127.0.0.1:${port}`
-//             ]
-//         };
+        const config: WasmDebugConfig = {
+            type: "wamr-debug",
+            request: "attach",
+            name: "Attach Debugger",
+            stopOnEntry: false,
+            initCommands: [
+                `command script import ${EXTENSION_PATH}/formatters/rust.py`
+            ],
+            attachCommands: [
+                `process connect -p wasm connect://127.0.0.1:${port}`
+            ]
+        };
 
-//         if (os.platform() === 'win32' || os.platform() === 'darwin') {
-//             config.initCommands?.push('platform select remote-linux');
-//         }
+        if (os.platform() === 'win32' || os.platform() === 'darwin') {
+            config.initCommands?.push('platform select remote-linux');
+        }
 
-//         try {
-//             console.log("test5");
-//             await vscode.debug.startDebugging(undefined, config);
-//         } catch (e) {
-//             console.log("test5.5");
-//             assert.fail("Could not connect to debug adapter");
-//         }
+        try {
+            console.log("test5");
+            await vscode.debug.startDebugging(undefined, config);
+        } catch (e) {
+            console.log("test5.5");
+            assert.fail("Could not connect to debug adapter");
+        }
 
-//         console.log("test6");
+        console.log("test6");
 
-//         // wait until vs code has reached breakpoint and has requested the variables.
-//         const variables = await getVariables;
-//         const namesToVariables = variables.reduce((acc: { [name: string]: DebugProtocol.Variable }, c) => {
-//             if (c.evaluateName) {
-//                 acc[c.evaluateName] = c;
-//             }
-//             return acc;
-//         }, {});
+        // wait until vs code has reached breakpoint and has requested the variables.
+        const variables = await getVariables;
+        const namesToVariables = variables.reduce((acc: { [name: string]: DebugProtocol.Variable }, c) => {
+            if (c.evaluateName) {
+                acc[c.evaluateName] = c;
+            }
+            return acc;
+        }, {});
 
-//         console.log("test7");
+        console.log("test7");
 
-//         assert.includeMembers(Object.keys(namesToVariables), ["vector", "map", "string", "slice", "deque", "ref_cell"], "The Debugger did not return all expected debugger variables.");
+        assert.includeMembers(Object.keys(namesToVariables), ["vector", "map", "string", "slice", "deque", "ref_cell"], "The Debugger did not return all expected debugger variables.");
 
-//         // Vector
-//         assert.equal(namesToVariables["vector"].value, " (5) vec![1, 2, 3, 4, 12]", "The Vector summary string looks different than expected");
+        // Vector
+        assert.equal(namesToVariables["vector"].value, " (5) vec![1, 2, 3, 4, 12]", "The Vector summary string looks different than expected");
 
-//         // Map
-//         assert.equal(namesToVariables["map"].value, " size=5, capacity=8", "The Map summary string looks different than expected");
+        // Map
+        assert.equal(namesToVariables["map"].value, " size=5, capacity=8", "The Map summary string looks different than expected");
 
-//         // String
-//         assert.equal(namesToVariables["string"].value, " \"this is a string\"", "The String summary string looks different than expected");
+        // String
+        assert.equal(namesToVariables["string"].value, " \"this is a string\"", "The String summary string looks different than expected");
 
-//         // Slice
-//         assert.equal(namesToVariables["slice"].value, " \"ello\"", "The Slice summary string looks different than expected");
+        // Slice
+        assert.equal(namesToVariables["slice"].value, " \"ello\"", "The Slice summary string looks different than expected");
 
-//         //Deque
-//         assert.equal(namesToVariables["deque"].value, " (5) VecDeque[1, 2, 3, 4, 5]", "The Deque summary string looks different than expected");
+        //Deque
+        assert.equal(namesToVariables["deque"].value, " (5) VecDeque[1, 2, 3, 4, 5]", "The Deque summary string looks different than expected");
 
-//         //RefCell
-//         assert.equal(namesToVariables["ref_cell"].value, " 5", "The RefCell summary string looks different than expected");
-//     }).timeout(20000);
-// });
+        //RefCell
+        assert.equal(namesToVariables["ref_cell"].value, " 5", "The RefCell summary string looks different than expected");
+    }).timeout(120000);
+});
 
