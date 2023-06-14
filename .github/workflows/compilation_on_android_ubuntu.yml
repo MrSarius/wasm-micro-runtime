@@ -678,6 +678,7 @@ jobs:
           wget https://github.com/MrSarius/wasm-micro-runtime/releases/download/WAMR-1.2.2/wamr-lldb-1.2.2-universal-macos-latest.tar.gz -O lldb.tar.gz
           tar -xvf lldb.tar.gz
           cp -R wamr-lldb/ linux
+          echo test1234
           ls linux
         working-directory: test-tools/wamr-ide/VSCode-Extension/resource/debug
 
