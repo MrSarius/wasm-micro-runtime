@@ -59,7 +59,7 @@ suite('Inegration Tests', function () {
     const downloadTimeout = 60 * 1000;
 
     before(async function () {
-        this.timeout(20000);
+        this.timeout(10 * 1000);
 
         // Download LLDB if necessary. Should be available in the CI. Only for local execution.
         if (!isLLDBInstalled(EXTENSION_PATH)) {
@@ -172,5 +172,5 @@ suite('Inegration Tests', function () {
 
         // RefCell
         assert.equal(namesToVariables["ref_cell"].value, " 5", "The RefCell summary string looks different than expected");
-    }).timeout(120000);
+    });
 });
