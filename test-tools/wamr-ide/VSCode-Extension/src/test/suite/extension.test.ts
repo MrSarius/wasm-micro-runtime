@@ -63,7 +63,6 @@ suite('Inegration Tests', function () {
 
         // Download LLDB if necessary. Should be available in the CI. Only for local execution.
         if (!isLLDBInstalled(EXTENSION_PATH)) {
-            console.log("test567");
             fs.readdirSync(EXTENSION_PATH + "/resource/debug/linux").forEach(file => {
                 console.log(file);
             });
@@ -92,8 +91,11 @@ suite('Inegration Tests', function () {
 
 
     test('Rust formatters', async function () {
+        console.log("test1");
         clearAllBp();
+        console.log("test2");
         setBpAtMarker(`${EXTENSION_PATH}/resource/test/test.rs`, "BP_MARKER_1");
+        console.log("test3");
 
         const getVariables = new Promise<DebugProtocol.Variable[]>((resolve, reject) => {
             vscode.debug.registerDebugAdapterTrackerFactory("wamr-debug", {
@@ -104,6 +106,7 @@ suite('Inegration Tests', function () {
                             if (message.type === "response") {
                                 const m = message as DebugProtocol.Response;
                                 if (m.command === "variables") {
+                                    console.log("test4");
                                     const res = m as DebugProtocol.VariablesResponse;
                                     resolve(res.body.variables);
                                 }
@@ -138,10 +141,13 @@ suite('Inegration Tests', function () {
         }
 
         try {
+            console.log("test5");
             await vscode.debug.startDebugging(undefined, config);
         } catch (e) {
             assert.fail("Could not connect to debug adapter");
         }
+
+        console.log("test6");
 
         // wait until vs code has reached breakpoint and has requested the variables.
         const variables = await getVariables;
@@ -151,6 +157,8 @@ suite('Inegration Tests', function () {
             }
             return acc;
         }, {});
+
+        console.log("test7");
 
         assert.includeMembers(Object.keys(namesToVariables), ["vector", "map", "string", "slice", "deque", "ref_cell"], "The Debugger did not return all expected debugger variables.");
 
