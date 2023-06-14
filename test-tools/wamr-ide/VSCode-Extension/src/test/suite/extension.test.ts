@@ -173,3 +173,4 @@ suite('Inegration Tests', function () {
         assert.equal(namesToVariables["ref_cell"].value, " 5", "The RefCell summary string looks different than expected");
     });
 });
+
