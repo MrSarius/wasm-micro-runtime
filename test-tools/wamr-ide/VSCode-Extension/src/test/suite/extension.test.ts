@@ -59,7 +59,8 @@ suite('Inegration Tests', function () {
     const downloadTimeout = 60 * 1000;
 
     before(async function () {
-        this.timeout(10 * 1000);
+        const start = Date.now();
+        this.timeout(120 * 1000);
 
         // Download LLDB if necessary. Should be available in the CI. Only for local execution.
         if (!isLLDBInstalled(EXTENSION_PATH)) {
@@ -85,6 +86,8 @@ suite('Inegration Tests', function () {
         debuggerProcess.stderr.on('data', (data) => {
             console.log(`Error from debugger process: ${data}`);
         });
+        const end = Date.now();
+        console.log(`test123: ${end - start} ms`);
     });
 
     after(async function () {
@@ -93,7 +96,8 @@ suite('Inegration Tests', function () {
     });
 
     test('Rust formatters', async function () {
-        this.timeout(60 * 1000);
+        const start = Date.now();
+        this.timeout(120 * 1000);
         clearAllBp();
         setBpAtMarker(`${EXTENSION_PATH}/resource/test/test.rs`, "BP_MARKER_1");
 
@@ -173,5 +177,7 @@ suite('Inegration Tests', function () {
 
         // RefCell
         assert.equal(namesToVariables["ref_cell"].value, " 5", "The RefCell summary string looks different than expected");
+        const end = Date.now();
+        console.log(`test456: ${end - start} ms`);
     });
 });
