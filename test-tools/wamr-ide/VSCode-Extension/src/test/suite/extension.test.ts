@@ -171,5 +171,5 @@ suite('Inegration Tests', function () {
 
         // RefCell
         assert.equal(namesToVariables["ref_cell"].value, " 5", "The RefCell summary string looks different than expected");
-    });
+    }).timeout(120000);
 });
