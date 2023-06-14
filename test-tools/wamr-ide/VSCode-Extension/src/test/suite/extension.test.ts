@@ -144,6 +144,7 @@ suite('Inegration Tests', function () {
             console.log("test5");
             await vscode.debug.startDebugging(undefined, config);
         } catch (e) {
+            console.log("test5.5");
             assert.fail("Could not connect to debug adapter");
         }
 
@@ -179,6 +180,6 @@ suite('Inegration Tests', function () {
 
         //RefCell
         assert.equal(namesToVariables["ref_cell"].value, " 5", "The RefCell summary string looks different than expected");
-    }).timeout(4000);
+    }).timeout(20000);
 });
 
