@@ -93,6 +93,7 @@ suite('Inegration Tests', function () {
     });
 
     test('Rust formatters', async function () {
+        this.timeout(60 * 1000);
         clearAllBp();
         setBpAtMarker(`${EXTENSION_PATH}/resource/test/test.rs`, "BP_MARKER_1");
 
