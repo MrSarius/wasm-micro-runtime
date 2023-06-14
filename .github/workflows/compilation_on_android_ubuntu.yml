@@ -675,5 +675,5 @@ jobs:
 
       - name: run tests
         timeout-minutes: 5
-        run: npm run test
-        working-directory: ./test-tools/wamr-ide/VSCode-Extension
+        run: xvfb-run npm run test
+        working-directory: test-tools/wamr-ide/VSCode-Extension
