@@ -59,6 +59,7 @@ suite('Inegration Tests', function () {
     const downloadTimeout = 60 * 1000;
 
     before(async function () {
+        this.timeout(20000);
 
         // Download LLDB if necessary. Should be available in the CI. Only for local execution.
         if (!isLLDBInstalled(EXTENSION_PATH)) {
