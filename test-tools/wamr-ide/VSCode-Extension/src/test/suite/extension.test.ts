@@ -8,6 +8,7 @@ import * as os from 'os';
 import {WasmDebugConfig, WasmDebugConfigurationProvider} from "../../debugConfigurationProvider";
 import {EXTENSION_PATH, clearAllBp, setBpAtMarker} from "./utils";
 import {downloadLldb, isLLDBInstalled} from '../../utilities/lldbUtilities';
+import * as fs from "fs";
 
 suite('Unit Tests', function () {
     test('DebugConfigurationProvider init commands', function () {
@@ -62,6 +63,10 @@ suite('Inegration Tests', function () {
 
         // Download LLDB if necessary. Should be available in the CI. Only for local execution.
         if (!isLLDBInstalled(EXTENSION_PATH)) {
+            console.log("test567");
+            fs.readdirSync(EXTENSION_PATH + "/resource/debug/linux").forEach(file => {
+                console.log(file);
+            });
             this.timeout(downloadTimeout);
             console.log("Downloading LLDB...");
             await downloadLldb(EXTENSION_PATH);
